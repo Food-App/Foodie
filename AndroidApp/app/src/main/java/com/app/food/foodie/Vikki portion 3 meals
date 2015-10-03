@@ -1,0 +1,122 @@
+public class YourActivity extends Activity {
+  private GestureDetector gestureDetector;
+*********************************************************************  
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    // ...
+
+    gestureDetector = new GestureDetector(
+                      new SwipeGestureDetector());
+  }//end onCreate
+***********************************************************************8
+
+
+ArrayList <Object> keepBreakfast = new Arraylist<>();
+JSONObject objB = new JSONObject(loadJSONFromAsset("breakfast.json"));
+JSONArray m_jArryB = objB.getJSONArray("recipes");
+
+ for (int i = 0; i < m_jArry.length(); i++) {
+       JSONObject jo_inside = m_jArryB.getJSONObject(i);
+/*//change to imageview
+       WebView web = (WebView) findViewById(R.id.webView);
+       web.getSettings().setLoadWithOverviewMode(true);
+       web.getSettings().setUseWideViewPort(true);
+       web.loadUrl(jo_inside.getString("image_url"));*/ 
+       onRightSwipe("breakfast", jo_inside);     
+  }//end for search Breakfast
+
+
+//lunch***********************************************
+
+ArrayList <Object> keepLunch = new Arraylist<>();
+JSONObject objL = new JSONObject(loadJSONFromAsset("lunch.json"));
+JSONArray m_jArryL = objL.getJSONArray("recipes");
+
+ for (int i = 0; i < m_jArry.length(); i++) {
+       JSONObject jo_inside = m_jArryL.getJSONObject(i);
+/*//change to imageview
+       WebView web = (WebView) findViewById(R.id.webView);
+       web.getSettings().setLoadWithOverviewMode(true);
+       web.getSettings().setUseWideViewPort(true);
+       web.loadUrl(jo_inside.getString("image_url"));*/
+       onRightSwipe("lunch", jo_inside);
+}end for search lunch
+                
+  
+//dinner**********************************************
+
+
+ArrayList <Object> keepDinner = new Arraylist<>();
+JSONObject objD = new JSONObject(loadJSONFromAsset("dinner.json"));
+JSONArray m_jArryD = objD.getJSONArray("recipes");
+
+ for (int i = 0; i < m_jArry.length(); i++) {
+       JSONObject jo_inside = m_jArry.getJSONObject(i);
+/*//change to imageview
+       WebView web = (WebView) findViewById(R.id.webView);
+       web.getSettings().setLoadWithOverviewMode(true);
+       web.getSettings().setUseWideViewPort(true);
+       web.loadUrl(jo_inside.getString("image_url"));*/
+       onRightSwipe("dinner", jo_inside);
+}//end for dinner search
+             
+//***********************************************touch event   
+  @Override
+ public boolean onTouchEvent(MotionEvent event) {
+    if (gestureDetector.onTouchEvent(event)) {
+      return true;
+    }
+    return super.onTouchEvent(event);
+  }
+
+  private void onLeftSwipe() {
+  }
+
+  
+private void onRightSwipe(String choice, Object currentRecipe) {
+  switch(choice){
+    case "breakfast":  keepBreakfast.add(currentRecipe);
+		       break;
+    case "lunch":      keepLunch.add(currentRecipe);
+		       break;
+    case "dinner":     keepDinner.add(currentRecipe);
+                       break;
+    default:           break;
+  } 
+}
+************************************************************************
+  private class SwipeGestureDetector 
+          extends SimpleOnGestureListener {
+    // Swipe properties, you can change it to make the swipe 
+    // longer or shorter and speed
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 200;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2,
+                         float velocityX, float velocityY) {
+      try {
+        float diffAbs = Math.abs(e1.getY() - e2.getY());
+        float diff = e1.getX() - e2.getX();
+
+        if (diffAbs > SWIPE_MAX_OFF_PATH)
+          return false;
+        
+        // Left swipe
+        if (diff > SWIPE_MIN_DISTANCE
+        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+           YourActivity.this.onLeftSwipe();
+
+        // Right swipe
+        } else if (-diff > SWIPE_MIN_DISTANCE
+        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+          YourActivity.this.onRightSwipe();
+        }
+      } catch (Exception e) {
+        Log.e("YourActivity", "Error on gestures");
+      }
+      return false;
+    }
+  }
+}//end class Activity
