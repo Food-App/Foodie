@@ -26,7 +26,23 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+
+import android.widget.ImageView;
+import android.widget.RelativeLayout.LayoutParams;
+import android.widget.RelativeLayout;
+import android.support.v4.app.NavUtils;
+
 public class MainActivity extends AppCompatActivity {
+    ImageView image;
+    int windowwidth;
+    int windowheight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        windowwidth = getWindowManager().getDefaultDisplay().getWidth();
+        windowheight = getWindowManager().getDefaultDisplay().getHeight();
+        image = (ImageView) findViewById(R.id.image);
+
+
+
+
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 */
-
+        image = (ImageView) findViewById(R.id.imageView);
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -87,13 +111,49 @@ public class MainActivity extends AppCompatActivity {
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
 
-            ImageView image = (ImageView) findViewById(R.id.imageView);
+
             image.setImageBitmap(myBitmap);
             //return myBitmap;
         } catch (IOException e) {
             e.printStackTrace();
            //return null;
         }
+
+
+
+        image.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                LayoutParams layoutParams = (LayoutParams) image.getLayoutParams();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        int x_cord = (int) event.getRawX();
+                        int y_cord = (int) event.getRawY();
+
+                        if (x_cord > windowwidth) {
+                            x_cord = windowwidth;
+                        }
+                        if (y_cord > windowheight) {
+                            y_cord = windowheight;
+                        }
+
+                       // layoutParams. = x_cord - 25;
+                       // layoutParams.topMargin = y_cord - 75;
+
+                        image.setX(x_cord-(image.getWidth()/2));
+                        image.setLayoutParams(layoutParams);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+
+
 
 
 
