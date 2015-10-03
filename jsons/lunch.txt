@@ -50,6 +50,6 @@
             "title": "Bum's Lunch",
             "source_url": "http://allrecipes.com/Recipe/Bums-Lunch/Detail.aspx",
             "image_url": "http://static.food2fork.com/467639696e.jpg",
-        },
+        }
     ]
 }
