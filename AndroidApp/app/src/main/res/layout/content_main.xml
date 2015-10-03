@@ -15,4 +15,14 @@
         android:id="@+id/webView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_above="@+id/webView"
+        android:layout_toEndOf="@+id/webView"
+        android:layout_alignTop="@+id/webView"
+        android:layout_alignLeft="@+id/webView"
+        android:layout_alignStart="@+id/webView" />
 </RelativeLayout>
