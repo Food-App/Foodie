@@ -9,10 +9,10 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main" tools:context=".MainActivity">
 
-    <WebView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/webView"
+        android:id="@+id/imageView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
