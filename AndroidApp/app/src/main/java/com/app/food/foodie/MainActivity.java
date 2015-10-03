@@ -1,5 +1,7 @@
 package com.app.food.foodie;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +19,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -61,7 +64,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         WebView web = (WebView) findViewById(R.id.webView);
+        web.getSettings().setLoadWithOverviewMode(true);
+        web.getSettings().setUseWideViewPort(true);
         web.loadUrl("http://static.food2fork.com/an_ideal_lunch_saladd9cf.jpg");
+
+
 
     }
 
