@@ -43,6 +43,18 @@ public class MainActivity extends AppCompatActivity {
     ImageView image;
     int windowwidth;
     int windowheight;
+    int currentIndex = 0;
+    String currentType = "breakfast";
+    int numChoices = 0 ;
+    String currentUrl;
+    String sourceUrl;
+    JSONArray current1;
+    JSONArray current2;
+    JSONArray current3;
+
+    ArrayList <Integer> keepBreakfast = new ArrayList<Integer>();
+    ArrayList <Integer> keepLunch = new ArrayList<Integer>();
+    ArrayList <Integer> keepDinner = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,22 +115,29 @@ public class MainActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
         }
 
-        try {
-            URL url = new URL("http://static.food2fork.com/an_ideal_lunch_saladd9cf.jpg");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+        try{
+            JSONObject ObjB = new JSONObject(loadJSONFromAsset("breakfast.json"));
+            current1 = ObjB.getJSONArray("recipes");
+            JSONObject jo_inside = current1.getJSONObject(currentIndex);
+            inputImage(jo_inside.getString("image_url"));
+            }
+        catch(Exception e){}
 
+        try{
+            JSONObject ObjL = new JSONObject(loadJSONFromAsset("lunch.json"));
+            current2 = ObjL.getJSONArray("recipes");
+            //JSONObject jo_inside = current2.getJSONObject(currentIndex);
+            //inputImage(jo_inside.getString("image_url"));
+            }
+        catch(Exception e){}
 
-            image.setImageBitmap(myBitmap);
-            //return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-           //return null;
-        }
-
+        try{
+            JSONObject ObjD = new JSONObject(loadJSONFromAsset("dinner.json"));
+            current3 = ObjD.getJSONArray("recipes");
+            //JSONObject jo_inside = current3.getJSONObject(currentIndex);
+            //inputImage(jo_inside.getString("image_url"));
+            }
+        catch(Exception e){}
 
 
         image.setOnTouchListener(new View.OnTouchListener() {
@@ -135,6 +154,14 @@ public class MainActivity extends AppCompatActivity {
 
                         if (x_cord > windowwidth) {
                             x_cord = windowwidth;
+                            if ( x_cord + ((float)1/4)* windowwidth > windowwidth){
+                                onRightSwipe(currentType, currentIndex);
+                                getNextImage();
+                            }
+                            if ( x_cord < ((float)1/4)*windowwidth){
+                                getNextImage();
+                            }
+
                         }
                         if (y_cord > windowheight) {
                             y_cord = windowheight;
@@ -160,6 +187,87 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void inputImage ( String urlLink) {
+        try {
+            URL url = new URL(urlLink);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+
+            image.setImageBitmap(myBitmap);
+        }
+        catch (IOException e)
+        {
+
+        }
+    }
+
+
+
+
+    public void getNextImage(){
+        if ( numChoices < 5 ){
+            currentType = "breakfast";
+            numChoices++;
+            currentIndex = numChoices;
+            try {
+                currentUrl = current1.getJSONObject(currentIndex).getString("image_url");
+                sourceUrl = current1.getJSONObject(currentIndex).getString("source_url");
+                inputImage(currentUrl);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else if (numChoices < 10){
+            currentType = "lunch";
+            numChoices++;
+            currentIndex = numChoices - 5;
+            try {
+                current2.getJSONObject(currentIndex);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                currentUrl = current2.getJSONObject(currentIndex).getString("image_url");
+                sourceUrl = current2.getJSONObject(currentIndex).getString("source_url");
+                inputImage(currentUrl);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+           currentType = "dinner";
+            numChoices++;
+            currentIndex = numChoices - 10;
+            try {
+                current3.getJSONObject(currentIndex);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                currentUrl = current3.getJSONObject(currentIndex).getString("image_url");
+                sourceUrl = current3.getJSONObject(currentIndex).getString("source_url");
+                inputImage(currentUrl);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void onRightSwipe(String currentType, Integer currentIndex) {
+        Log.d("SWIPE: ","Right Swipe");
+        switch(currentType){
+            case "breakfast":  keepBreakfast.add(currentIndex);
+                                break;
+            case "lunch":      keepLunch.add(currentIndex);
+                                break;
+            case "dinner":     keepDinner.add(currentIndex);
+                                break;
+            default:           break;
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
