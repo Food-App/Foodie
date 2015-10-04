@@ -1,7 +1,9 @@
 package com.app.food.foodie;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView image;
     int windowwidth;
     int windowheight;
+<<<<<<< HEAD
     int currentIndex = 0;
     String currentType = "breakfast";
     int numChoices = 0 ;
@@ -55,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayList <Integer> keepBreakfast = new ArrayList<Integer>();
     ArrayList <Integer> keepLunch = new ArrayList<Integer>();
     ArrayList <Integer> keepDinner = new ArrayList<Integer>();
+=======
+    int initX;
+    int initY;
+>>>>>>> origin/master
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         windowwidth = getWindowManager().getDefaultDisplay().getWidth();
         windowheight = getWindowManager().getDefaultDisplay().getHeight();
-        image = (ImageView) findViewById(R.id.image);
+        image = (ImageView) findViewById(R.id.imageView);
 
 
 
@@ -81,22 +88,12 @@ public class MainActivity extends AppCompatActivity {
         try {
             JSONObject obj = new JSONObject(loadJSONFromAsset("lunch.json"));
             JSONArray m_jArry = obj.getJSONArray("recipes");
-            ArrayList<HashMap<String, String>> formList = new ArrayList<HashMap<String, String>>();
-            //HashMap<String, String> m_li;
+
 
             for (int i = 0; i < m_jArry.length(); i++) {
                 JSONObject jo_inside = m_jArry.getJSONObject(i);
                 Log.d("Details-->", jo_inside.getString("title"));
-        /*
-        String formula_value = jo_inside.getString("formule");
-        String url_value = jo_inside.getString("url");
 
-        //Add your values in your `ArrayList` as below:
-        m_li = new HashMap<String, String>();
-        m_li.put("formule", formula_value);
-        m_li.put("url", url_value);
-
-        formList.add(m_li);*/
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -109,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 */
-        image = (ImageView) findViewById(R.id.imageView);
+
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -147,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                 LayoutParams layoutParams = (LayoutParams) image.getLayoutParams();
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        initX = (int) event.getRawX();
+                        initY = (int) event.getRawY();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         int x_cord = (int) event.getRawX();
@@ -173,12 +172,33 @@ public class MainActivity extends AppCompatActivity {
                         image.setX(x_cord-(image.getWidth()/2));
                         image.setLayoutParams(layoutParams);
                         break;
+                    case MotionEvent.ACTION_UP:
+                        Log.d("Details-->", "ACTION UP" + initX + " "+ (int) event.getRawX() + " "+initY +" "+ (int) event.getRawY());
+
+                        if(initX == (int) event.getRawX() && initY == (int) event.getRawY())
+                        {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+                            startActivity(browserIntent);
+                            Log.d("Details-->", "IMAGE CLICKED");
+                            //return false;
+                        }
+                        break;
                     default:
                         break;
                 }
                 return true;
             }
         });
+/*
+        image.setClickable(true);
+        image.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+                startActivity(browserIntent);
+                Log.d("Details-->", "IMAGE CLICKED");
+            }
+        });*/
+
 
 
 
